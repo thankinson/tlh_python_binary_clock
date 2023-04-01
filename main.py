@@ -5,15 +5,15 @@ from adafruit_ht16k33.matrix import Matrix8x8
 i2c = board.I2C()
 matrix = Matrix8x8(i2c)
 
-t = time.localtime()
-curent_time = time.strftime("%H:%M:%S", t)
-hour = time.strftime("%H", t)
-min = time.strftime("%M", t)
-sec = time.strftime("%S", t)
-print(curent_time)
-print("Hour: ", hour)
-print("Min: ", min)
-print("Sec: ", sec)
+# t = time.localtime()
+# curent_time = time.strftime("%H:%M:%S", t)
+# hour = time.strftime("%H", t)
+# min = time.strftime("%M", t)
+# sec = time.strftime("%S", t)
+# print(curent_time)
+# print("Hour: ", hour)
+# print("Min: ", min)
+# print("Sec: ", sec)
 
 # This function converts the time to binary
 def TimeToBinary(number):
@@ -30,6 +30,7 @@ def TimeToBinary(number):
         return int(b)
 
 # This function takes the hour/min/second binary and converts it to an array
+# This function also reverses the code to display in th ecorrect positions
 def BinaryList(number):
         binary = [int(i) for i in str(number)]
 
@@ -45,14 +46,25 @@ def DisplayTime(num, time):
         for i in range(t):
                 matrix[num, i] = time[i]
 
-print("hour: ",hour, "binary: ", BinaryList(TimeToBinary(hour)))
-print("min: ",min, "binary: ", BinaryList(TimeToBinary(min)))
-print("second: ",sec, "binary: ", BinaryList(TimeToBinary(sec)))
+# print("hour: ",hour, "binary: ", BinaryList(TimeToBinary(hour)))
+# print("min: ",min, "binary: ", BinaryList(TimeToBinary(min)))
+# print("second: ",sec, "binary: ", BinaryList(TimeToBinary(sec)))
 
-curr_hour = BinaryList(TimeToBinary(hour))
-curr_min = BinaryList(TimeToBinary(min))
-curr_sec = BinaryList(TimeToBinary(sec))
-
-DisplayTime(7, curr_hour)
-DisplayTime(5, curr_min)
-DisplayTime(3, curr_sec)
+def Timer():
+        while time:
+                t = time.localtime()
+                sec = time.strftime("%S", t)
+                hour = time.strftime("%H", t)
+                min = time.strftime("%M", t)
+                i = sec
+                if (int(i) >= 1 and int(i) <= 59):
+                        curr_hour = BinaryList(TimeToBinary(hour))
+                        curr_min = BinaryList(TimeToBinary(min))
+                        curr_sec = BinaryList(TimeToBinary(sec))
+                        DisplayTime(7, curr_hour)
+                        DisplayTime(5, curr_min)
+                        DisplayTime(3, curr_sec)
+                elif (i == '00'):
+                        matrix.fill(0)
+#                       at the moment this elif is the only way i have figured out how to reset the time after 60 seconds.
+Timer()
